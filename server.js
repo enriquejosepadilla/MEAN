@@ -5,7 +5,7 @@ var express = require('express');
 var	stylus = require('stylus');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
-
+var mongoose = require('mongoose');
 
 
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -27,11 +27,38 @@ app.use(stylus.middleware(
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(morgan('combined'));
+mongoose.connect('mongodb://localhost/mean');
+
+var db = mongoose.connection;
+db.on('error' , console.error.bind(console, ' connection error'));
+db.once('open', function callback() {
+	console.log('mean db opened');
+});
+
+var messageSchema = mongoose.Schema({message: String});
+var MessageModel = mongoose.model('Message' , messageSchema);
+
+var mongoMessage;
+MessageModel.findOne().exec(function(err , messageDoc) {
+	if (messageDoc)
+		mongoMessage = messageDoc.message;
+	else {
+		mongoMessage = "Didnt find a message";
+	}
+});
+
+app.get('/partials/:partialPath' , function(req,res){
+	console.log('looking for partials:' + req.params);
+	res.render('partials/' + req.params.partialPath);
+});
 
 
 
-app.get('/', function (req,res) {
-    res.render('index');
+app.get('*', function (req,res) {
+		console.log('index loaded');
+    res.render('index', {
+			mongoMessage: mongoMessage
+		});
 });
 
 var server = app.listen(3000, function () {

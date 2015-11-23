@@ -1,0 +1,17 @@
+{
+  "name": "multivision",
+  "description": "Extreme Tech TRaining",
+  "main": "index.js",
+  "authors": [
+    "Enrique Padilla"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "toastr": "~2.1.2",
+    "angular": "~1.4.7",
+    "angular-resource": "~1.4.7",
+    "angular-route": "~1.4.7"
+  }
+}
