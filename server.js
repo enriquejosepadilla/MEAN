@@ -27,7 +27,12 @@ app.use(stylus.middleware(
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(morgan('combined'));
-mongoose.connect('mongodb://localhost/mean');
+
+if (env === "development") {
+	mongoose.connect('mongodb://localhost/mean');
+} else {
+	mongoose.connect('mongodb://enrique:mean@ds057224.mongolab.com:57224/mean');
+}
 
 var db = mongoose.connection;
 db.on('error' , console.error.bind(console, ' connection error'));
@@ -61,7 +66,8 @@ app.get('*', function (req,res) {
 		});
 });
 
-var server = app.listen(3000, function () {
+var portNum = process.env.PORT || 3000;
+var server = app.listen(portNum, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 
